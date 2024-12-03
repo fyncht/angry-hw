@@ -11,32 +11,22 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    logger.info("Получена команда /start")
-    args = context.args
-    if not args:
-        await update.message.reply_text("Токен отсутствует.")
-        logger.error("Токен отсутствует")
-        return
-
-    token = args[0]
     telegram_id = update.effective_user.id
     username = update.effective_user.username
 
-    logger.info(f"Получен токен: {token}, Telegram ID: {telegram_id}, username: {username}")
-
     response = requests.get(f"{DJANGO_SERVER}/callback/", params={
-        'token': token,
         'telegram_id': telegram_id,
         'username': username,
     })
 
-    logger.info(f"Ответ от сервера Django: {response.status_code}, {response.text}")
+    print(f"Response status: {response.status_code}")
+    print(f"Response text: {response.text}")
 
     if response.status_code == 200:
-        await update.message.reply_text("Вы успешно вошли!")
+        auth_url = f"{DJANGO_SERVER}/auth_complete/?token={response.json().get('token')}"
+        await update.message.reply_text(f"Вы успешно авторизовались! Перейдите на сайт: {auth_url}")
     else:
-        await update.message.reply_text("Произошла ошибка.")
-        logger.error("Ошибка при запросе к Django")
+        await update.message.reply_text(f"Ошибка авторизации: {response.text}")
 
 
 def main():
