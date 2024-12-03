@@ -1,20 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f3f4f6;
+        }
+
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+
+        a, button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-decoration: none;
+            color: #fff;
+            background: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        a:hover, button:hover {
+            background: #0056b3;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    {% if user.is_authenticated %}
-        <p>Добро пожаловать, {{ user.username }}!</p>
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">Выйти</button>
-        </form>
-    {% else %}
-        <a href="{% url 'login_with_telegram' %}">Войти через Telegram</a>
-    {% endif %}
-
+    <div class="container">
+        {% if user.is_authenticated %}
+            <h1>Добро пожаловать, {{ user.username }}!</h1>
+            <p>Вы успешно вошли через Telegram.</p>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
+        {% else %}
+            <h1>Добро пожаловать!</h1>
+            <p>Для входа нажмите на кнопку ниже:</p>
+            <a href="{% url 'login_with_telegram' %}">Войти через Telegram</a>
+        {% endif %}
+    </div>
 </body>
 </html>
-
